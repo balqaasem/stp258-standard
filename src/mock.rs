@@ -12,7 +12,7 @@ use sp_runtime::{
 	AccountId32, ModuleId,
 };
 
-use crate as stp258_currencies;
+use crate as stp258_standard;
 
 parameter_types! {
 	pub const BlockHashCount: u64 = 250;
@@ -108,7 +108,7 @@ construct_runtime!(
 		UncheckedExtrinsic = UncheckedExtrinsic,
 	{
 		System: frame_system::{Module, Call, Storage, Config, Event<T>},
-		Stp258Currencies: stp258_currencies::{Module, Call, Event<T>},
+		Stp258Standard: stp258_standard::{Module, Call, Event<T>},
 		Stp258Tokens: stp258_tokens::{Module, Storage, Event<T>, Config<T>},
 		PalletBalances: pallet_balances::{Module, Call, Storage, Config<T>, Event<T>},
 	}
