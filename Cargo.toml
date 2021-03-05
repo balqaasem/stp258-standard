@@ -38,6 +38,5 @@ std = [
 	"frame-support/std",
 	"frame-system/std",
 	"stp258-traits/std",
-	"orml-traits/std",
 	"orml-utilities/std",
 ]
