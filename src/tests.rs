@@ -29,7 +29,7 @@ fn stp258_currency_reservable_should_work() {
 			assert_eq!(Stp258Standard::total_issuance(STP258_NATIVE_ID), 200);
 			assert_eq!(Stp258Standard::total_issuance(STP258_TOKEN_ID), 200);
 			assert_eq!(Stp258Standard::free_balance(STP258_TOKEN_ID, &ALICE), 100);
-			assert_eq!(NativeCurrency::free_balance(&ALICE), 100);
+			assert_eq!(Stp258Native::free_balance(&ALICE), 100);
 
 			assert_ok!(Stp258Standard::reserve(STP258_TOKEN_ID, &ALICE, 30));
 			assert_ok!(Stp258Standard::reserve(STP258_NATIVE_ID, &ALICE, 40));
@@ -44,9 +44,9 @@ fn stp258_native_lockable_should_work() {
 		.one_hundred_for_alice_n_bob()
 		.build()
 		.execute_with(|| {
-			assert_ok!(NativeCurrency::set_lock(ID_1, &ALICE, 10));
+			assert_ok!(Stp258Native::set_lock(ID_1, &ALICE, 10));
 			assert_eq!(PalletBalances::locks(&ALICE).len(), 1);
-			assert_ok!(NativeCurrency::remove_lock(ID_1, &ALICE));
+			assert_ok!(Stp258Native::remove_lock(ID_1, &ALICE));
 			assert_eq!(PalletBalances::locks(&ALICE).len(), 0);
 		});
 }
@@ -57,8 +57,8 @@ fn stp258_native_reservable_should_work() {
 		.one_hundred_for_alice_n_bob()
 		.build()
 		.execute_with(|| {
-			assert_ok!(NativeCurrency::reserve(&ALICE, 50));
-			assert_eq!(NativeCurrency::reserved_balance(&ALICE), 50);
+			assert_ok!(Stp258Native::reserve(&ALICE, 50));
+			assert_eq!(Stp258Native::reserved_balance(&ALICE), 50);
 		});
 }
 
@@ -87,7 +87,7 @@ fn stp258_asset_adapting_pallet_balances_reservable() {
 }
 
 #[test]
-fn stp258_multi_should_work() {
+fn stp258_currency_should_work() {
 	ExtBuilder::default()
 		.one_hundred_for_alice_n_bob()
 		.build()
@@ -118,16 +118,16 @@ fn stp258_native_should_work() {
 		.build()
 		.execute_with(|| {
 			assert_ok!(Stp258Standard::transfer_stp258_native(Some(ALICE).into(), BOB, 50));
-			assert_eq!(NativeCurrency::free_balance(&ALICE), 50);
-			assert_eq!(NativeCurrency::free_balance(&BOB), 150);
+			assert_eq!(Stp258Native::free_balance(&ALICE), 50);
+			assert_eq!(Stp258Native::free_balance(&BOB), 150);
 
-			assert_ok!(NativeCurrency::transfer(&ALICE, &BOB, 10));
-			assert_eq!(NativeCurrency::free_balance(&ALICE), 40);
-			assert_eq!(NativeCurrency::free_balance(&BOB), 160);
+			assert_ok!(Stp258Native::transfer(&ALICE, &BOB, 10));
+			assert_eq!(Stp258Native::free_balance(&ALICE), 40);
+			assert_eq!(Stp258Native::free_balance(&BOB), 160);
 
 			assert_eq!(Stp258Standard::slash(STP258_NATIVE_ID, &ALICE, 10), 0);
-			assert_eq!(NativeCurrency::free_balance(&ALICE), 30);
-			assert_eq!(NativeCurrency::total_issuance(), 190);
+			assert_eq!(Stp258Native::free_balance(&ALICE), 30);
+			assert_eq!(Stp258Native::total_issuance(), 190);
 		});
 }
 
@@ -137,15 +137,15 @@ fn stp258_native_extended_should_work() {
 		.one_hundred_for_alice_n_bob()
 		.build()
 		.execute_with(|| {
-			assert_ok!(NativeCurrency::update_balance(&ALICE, 10));
-			assert_eq!(NativeCurrency::free_balance(&ALICE), 110);
+			assert_ok!(Stp258Native::update_balance(&ALICE, 10));
+			assert_eq!(Stp258Native::free_balance(&ALICE), 110);
 
 			assert_ok!(<Stp258Standard as Stp258CurrencyExtended<AccountId>>::update_balance(
 				STP258_NATIVE_ID,
 				&ALICE,
 				10
 			));
-			assert_eq!(NativeCurrency::free_balance(&ALICE), 120);
+			assert_eq!(Stp258Native::free_balance(&ALICE), 120);
 		});
 }
 
@@ -226,7 +226,7 @@ fn update_balance_call_should_work() {
 				STP258_NATIVE_ID,
 				-10
 			));
-			assert_eq!(NativeCurrency::free_balance(&ALICE), 90);
+			assert_eq!(Stp258Native::free_balance(&ALICE), 90);
 			assert_eq!(Stp258Standard::free_balance(STP258_TOKEN_ID, &ALICE), 100);
 			assert_ok!(Stp258Standard::update_balance(Origin::root(), ALICE, STP258_TOKEN_ID, 10));
 			assert_eq!(Stp258Standard::free_balance(STP258_TOKEN_ID, &ALICE), 110);
