@@ -7,19 +7,22 @@ use frame_system::{ensure_root, ensure_signed, pallet_prelude::*};
 use stp258_traits::{
 	account::MergeAccount,
 	arithmetic::{Signed, SimpleArithmetic}, 
-	BalanceStatus, 
-	Currency as SetheumCurrency, 
-	LockableCurrency as SetheumLockableCurrency,  
-	LockIdentifier, 
-	ReservableCurrency as SetheumReservableCurrency, 
-	Stp258Asset, 
-	Stp258AssetExtended, 
-	Stp258AssetLockable, 
-	Stp258AssetReservable, 
-	Stp258Currency, 
-	Stp258CurrencyExtended, 
-	Stp258CurrencyLockable,
-	Stp258CurrencyReservable, 
+	setheum_currency::{
+		BalanceStatus, LockIdentifier,
+		Currency as SetheumCurrency, 
+		LockableCurrency as SetheumLockableCurrency,
+		ReservableCurrency as SetheumReservableCurrency,
+	}, 
+	stp258_currency::{
+		Stp258Asset, 
+		Stp258AssetExtended, 
+		Stp258AssetLockable, 
+		Stp258AssetReservable, 
+		Stp258Currency, 
+		Stp258CurrencyExtended, 
+		Stp258CurrencyLockable,
+		Stp258CurrencyReservable, 
+	}
 };
 use orml_utilities::with_transaction_result;
 use sp_runtime::{
