@@ -2,20 +2,24 @@
 #![allow(clippy::unused_unit)]
 
 use codec::Codec;
-use frame_support::{
-	pallet_prelude::*,
-	traits::{
-		Currency as SetheumCurrency, ExistenceRequirement, Get, 
-		LockableCurrency as SetheumLockableCurrency,
-		ReservableCurrency as SetheumReservableCurrency, WithdrawReasons,
-	},
-};
+use frame_support::{pallet_prelude::*, traits::{ExistenceRequirement, Get, WithdrawReasons},};
 use frame_system::{ensure_root, ensure_signed, pallet_prelude::*};
 use stp258_traits::{
 	account::MergeAccount,
-	arithmetic::{Signed, SimpleArithmetic},
-	BalanceStatus, Stp258Asset, Stp258AssetExtended, Stp258AssetLockable, Stp258AssetReservable,
-	LockIdentifier, Stp258Currency, Stp258CurrencyExtended, Stp258CurrencyReservable, Stp258CurrencyLockable,
+	arithmetic::{Signed, SimpleArithmetic}, 
+	BalanceStatus, 
+	Currency as SetheumCurrency, 
+	LockableCurrency as SetheumLockableCurrency,  
+	LockIdentifier, 
+	ReservableCurrency as SetheumReservableCurrency, 
+	Stp258Asset, 
+	Stp258AssetExtended, 
+	Stp258AssetLockable, 
+	Stp258AssetReservable, 
+	Stp258Currency, 
+	Stp258CurrencyExtended, 
+	Stp258CurrencyLockable,
+	Stp258CurrencyReservable, 
 };
 use orml_utilities::with_transaction_result;
 use sp_runtime::{
@@ -329,6 +333,22 @@ impl<T: Config> Stp258CurrencyReservable<T::AccountId> for Pallet<T> {
 		}
 	}
 
+	fn burn_reserved(currency_id: Self::CurrencyId, who: &T::AccountId, value: Self::Balance) -> Self::Balance {
+		if currency_id == T::GetStp258NativeId::get() {
+			T::Stp258Native::burn_reserved(who, value)
+		} else {
+			T::Stp258Currency::burn_reserved(currency_id, who, value)
+		}
+	}
+
+	fn create_reserved(currency_id: Self::CurrencyId, who: &T::AccountId, value: Self::Balance) -> Self::Balance {
+		if currency_id == T::GetStp258NativeId::get() {
+			T::Stp258Native::create_reserved(who, value)
+		} else {
+			T::Stp258Currency::create_reserved(currency_id, who, value)
+		}
+	}
+
 	fn reserved_balance(currency_id: Self::CurrencyId, who: &T::AccountId) -> Self::Balance {
 		if currency_id == T::GetStp258NativeId::get() {
 			T::Stp258Native::reserved_balance(who)
@@ -461,6 +481,14 @@ where
 
 	fn slash_reserved(who: &T::AccountId, value: Self::Balance) -> Self::Balance {
 		<Pallet<T> as Stp258CurrencyReservable<T::AccountId>>::slash_reserved(GetCurrencyId::get(), who, value)
+	}
+
+	fn burn_reserved(who: &T::AccountId, value: Self::Balance) -> Self::Balance {
+		<Pallet<T> as Stp258CurrencyReservable<T::AccountId>>::burn_reserved(GetCurrencyId::get(), who, value)
+	}
+
+	fn create_reserved(who: &T::AccountId, value: Self::Balance) -> Self::Balance {
+		<Pallet<T> as Stp258CurrencyReservable<T::AccountId>>::create_reserved(GetCurrencyId::get(), who, value)
 	}
 
 	fn reserved_balance(who: &T::AccountId) -> Self::Balance {
@@ -624,6 +652,14 @@ where
 	fn slash_reserved(who: &AccountId, value: Self::Balance) -> Self::Balance {
 		let (_, gap) = Currency::slash_reserved(who, value);
 		gap
+	}
+
+	fn burn_reserved(who: &AccountId, value: Self::Balance) -> DispatchResult {
+		Currency::burn_reserved(who, value)
+	}
+
+	fn create_reserved(who: &AccountId, value: Self::Balance) -> DispatchResult {
+		Currency::create_reserved(who, value)
 	}
 
 	fn reserved_balance(who: &AccountId) -> Self::Balance {
