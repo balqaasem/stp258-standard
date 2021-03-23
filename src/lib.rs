@@ -159,6 +159,14 @@ impl<T: Config> Stp258Currency<T::AccountId> for Pallet<T> {
 	type CurrencyId = CurrencyIdOf<T>;
 	type Balance = BalanceOf<T>;
 
+	fn base_unit(currency_id: Self::CurrencyId) -> Self::Balance {
+		if currency_id == T::GetStp258NativeId::get() {
+			T::Stp258Native::minimum_balance()
+		} else {
+			T::Stp258Currency::base_unit(currency_id)
+		}
+	}
+
 	fn minimum_balance(currency_id: Self::CurrencyId) -> Self::Balance {
 		if currency_id == T::GetStp258NativeId::get() {
 			T::Stp258Native::minimum_balance()
