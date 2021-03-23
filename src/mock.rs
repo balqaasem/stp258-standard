@@ -9,7 +9,7 @@ use sp_core::H256;
 use sp_runtime::{
 	testing::Header,
 	traits::{AccountIdConversion, IdentityLookup},
-	AccountId32, ModuleId,
+	AccountId32, ModuleId, Perbill,
 };
 
 use crate as stp258_standard;
@@ -67,8 +67,32 @@ parameter_type_with_key! {
 	};
 }
 
+parameter_type_with_key! {
+	pub GetBaseUnit: |currency_id: CurrencyId| -> Balance {
+		match currency_id {
+			&SETT => 10_000,
+			&JUSD => 1_000,
+			_ => 0,
+		}
+	};
+}
+
+const SERP_QUOTE_MULTIPLE: Balance = 2;
+const SINGLE_UNIT: Balance = 1;
+const SERPER_RATIO: Perbill = Perbill::from_percent(25);
+const SETT_PAY_RATIO: Perbill = Perbill::from_percent(75);
+
 parameter_types! {
 	pub DustAccount: AccountId = ModuleId(*b"dsss/dst").into_account();
+}
+
+parameter_types! {
+	pub const GetSerperAcc: AccountId = SERPER;
+	pub const GetSerpQuoteMultiple: Balance = SERP_QUOTE_MULTIPLE;
+	pub const GetSettPayAcc: AccountId = SETTPAY;
+	pub const GetSingleUnit: Balance = SINGLE_UNIT;
+	pub const GetSerperRatio: Perbill = SERPER_RATIO;
+	pub const GetSettPayRatio: Perbill = SETT_PAY_RATIO;
 }
 
 impl stp258_tokens::Config for Runtime {
@@ -78,14 +102,22 @@ impl stp258_tokens::Config for Runtime {
 	type CurrencyId = CurrencyId;
 	type WeightInfo = ();
 	type ExistentialDeposits = ExistentialDeposits;
+	type GetBaseUnit = GetBaseUnit;
+	type GetSerpQuoteMultiple = GetSerpQuoteMultiple;
+	type GetSerperAcc = GetSerperAcc;
+	type GetSettPayAcc = GetSettPayAcc;
+	type GetSerperRatio = GetSerperRatio;
+	type GetSettPayRatio = GetSettPayRatio;
+	type GetSingleUnit = GetSingleUnit;
 	type OnDust = stp258_tokens::TransferDust<Runtime, DustAccount>;
 }
 
-pub const STP258_NATIVE_ID: CurrencyId = 1;
-pub const STP258_TOKEN_ID: CurrencyId = 2;
+pub const DNAR: CurrencyId = 1;
+pub const SETT: CurrencyId = 2;
+pub const JUSD: CurrencyId = 3;
 
 parameter_types! {
-	pub const GetStp258NativeId: CurrencyId = STP258_NATIVE_ID;
+	pub const GetStp258NativeId: CurrencyId = DNAR;
 }
 
 impl Config for Runtime {
@@ -114,9 +146,11 @@ construct_runtime!(
 	}
 );
 
-pub const ALICE: AccountId = AccountId32::new([1u8; 32]);
-pub const BOB: AccountId = AccountId32::new([2u8; 32]);
-pub const EVA: AccountId = AccountId32::new([5u8; 32]);
+
+pub const ALICE: AccountId = AccountId32::new([0u8; 32]);
+pub const BOB: AccountId = AccountId32::new([1u8; 32]);
+pub const SERPER: AccountId = AccountId32::new([3u8; 32]);
+pub const SETTPAY: AccountId = AccountId32::new([4u8; 32]);
 pub const ID_1: LockIdentifier = *b"1       ";
 
 pub struct ExtBuilder {
@@ -137,13 +171,21 @@ impl ExtBuilder {
 		self
 	}
 
-	pub fn one_hundred_for_alice_n_bob(self) -> Self {
+	pub fn one_hundred_for_alice_n_bob_n_serper_n_settpay(self) -> Self {
 		self.balances(vec![
-			(ALICE, STP258_NATIVE_ID, 100),
-			(BOB, STP258_NATIVE_ID, 100),
-			(ALICE, STP258_TOKEN_ID, 100),
-			(BOB, STP258_TOKEN_ID, 100),
-		])
+			(ALICE, DNAR, 100), 
+			(BOB, DNAR, 100),
+			(SERPER, DNAR, 100),
+			(SETTPAY, DNAR, 100),
+			(ALICE, SETT, 100 * 10_000), 
+			(BOB, SETT, 100 * 10_000),
+			(SERPER, SETT, 100 * 10_000),
+			(SETTPAY, SETT, 100 * 10_000),
+			(ALICE, JUSD, 100 * 1_000), 
+			(BOB, JUSD, 100 * 1_000),
+			(SERPER, JUSD, 100 * 1_000),
+			(SETTPAY, JUSD, 100 * 1_000),
+			])
 	}
 
 	pub fn build(self) -> sp_io::TestExternalities {
@@ -156,7 +198,7 @@ impl ExtBuilder {
 				.endowed_accounts
 				.clone()
 				.into_iter()
-				.filter(|(_, currency_id, _)| *currency_id == STP258_NATIVE_ID)
+				.filter(|(_, currency_id, _)| *currency_id == DNAR)
 				.map(|(account_id, _, initial_balance)| (account_id, initial_balance))
 				.collect::<Vec<_>>(),
 		}
@@ -167,7 +209,7 @@ impl ExtBuilder {
 			endowed_accounts: self
 				.endowed_accounts
 				.into_iter()
-				.filter(|(_, currency_id, _)| *currency_id != STP258_NATIVE_ID)
+				.filter(|(_, currency_id, _)| *currency_id != DNAR)
 				.collect::<Vec<_>>(),
 		}
 		.assimilate_storage(&mut t)
