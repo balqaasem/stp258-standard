@@ -23,7 +23,7 @@ impl frame_system::Config for Runtime {
 	type Origin = Origin;
 	type Call = Call;
 	type Index = u64;
-	type BlockNumber = u64;
+	type BlockNumber = BlockNumber;
 	type Hash = H256;
 	type Hashing = ::sp_runtime::traits::BlakeTwo256;
 	type AccountId = AccountId;
@@ -44,8 +44,9 @@ impl frame_system::Config for Runtime {
 	type SS58Prefix = ();
 }
 
-type CurrencyId = u32;
 type Balance = u64;
+type BlockNumber = u64;
+type CurrencyId = u32;
 
 parameter_types! {
 	pub const ExistentialDeposit: u64 = 1;
@@ -63,7 +64,12 @@ impl pallet_balances::Config for Runtime {
 
 parameter_type_with_key! {
 	pub ExistentialDeposits: |currency_id: CurrencyId| -> Balance {
-		Default::default()
+		match currency_id {
+			&DNAR => 2,
+			&SETT => 1 * 10_000,
+			&JUSD => 1 * 1_000,
+			_ => 0,
+		}
 	};
 }
 
@@ -125,6 +131,7 @@ impl Config for Runtime {
 	type Stp258Currency = Stp258Tokens;
 	type Stp258Native = AdaptedStp258Asset;
 	type GetStp258NativeId = GetStp258NativeId;
+	type GetSerpNativeId = GetStp258NativeId;
 	type WeightInfo = ();
 }
 pub type Stp258Native = Stp258NativeOf<Runtime>;
