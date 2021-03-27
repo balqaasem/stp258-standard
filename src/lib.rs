@@ -11,7 +11,7 @@ use frame_support::{
 	},
 };
 use frame_system::{ensure_root, ensure_signed, pallet_prelude::*};
-use stp258_traits::{
+use serp_traits::{
 	account::MergeAccount,
 	arithmetic::{Signed, SimpleArithmetic},
 	BalanceStatus, Stp258Asset, Stp258AssetExtended, Stp258AssetLockable, Stp258AssetReservable,
@@ -158,6 +158,14 @@ pub mod module {
 impl<T: Config> Stp258Currency<T::AccountId> for Pallet<T> {
 	type CurrencyId = CurrencyIdOf<T>;
 	type Balance = BalanceOf<T>;
+
+	fn base_unit(currency_id: Self::CurrencyId) -> Self::Balance {
+		if currency_id == T::GetStp258NativeId::get() {
+			T::Stp258Native::minimum_balance()
+		} else {
+			T::Stp258Currency::base_unit(currency_id)
+		}
+	}
 
 	fn minimum_balance(currency_id: Self::CurrencyId) -> Self::Balance {
 		if currency_id == T::GetStp258NativeId::get() {
