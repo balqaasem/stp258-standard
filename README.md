@@ -9,6 +9,8 @@
  native currency which implements `Stp258AssetExtended`, and a
  multi-currency which implements `Stp258Currency`.
 
+ This module is built on the [STP-258 Tokens](https://github.com/Setheum-Labs/stp258-tokens) implementing the [STP-258 Traits](https://github.com/Setheum-Labs/stp258-traits).
+
  ### Implementations
 
  The stp258 module provides implementations for following traits.
