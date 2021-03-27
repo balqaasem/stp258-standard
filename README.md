@@ -1,6 +1,6 @@
  # Setheum Tokenization Protocol 258 Standard
  ## Setheum Tokenization Protocol 258 Standard
- Multi-Currency Stablecoin SERP Module built on top of `Stp258Tokens` and `Stp258Traits`.
+ Multi-Currency Stablecoin SERP Module built on top of `Stp258Serp` and `SerpTraits`.
 
 
  ## Overview
@@ -9,7 +9,7 @@
  native currency which implements `Stp258AssetExtended`, and a
  multi-currency which implements `Stp258Currency`.
 
- This module is built on the [STP-258 Tokens](https://github.com/Setheum-Labs/stp258-tokens) implementing the [STP-258 Traits](https://github.com/Setheum-Labs/stp258-traits).
+ This module is built on the [STP-258 Serp](https://github.com/Setheum-Labs/stp258-serp) implementing the [SERP Traits](https://github.com/Setheum-Labs/serp-traits).
 
  ### Implementations
 
@@ -34,6 +34,6 @@
 
 ## Acknowledgement & Reference
 
-This Pallet is built on [STP258 Tokens](https://github.com/Setheum-Labs/stp258-tokens) pallet.
+This Pallet is built on [STP258 Serp](https://github.com/Setheum-Labs/stp258-serp) pallet.
 
 This Pallet is inspired by the [ORML Currencies](https://github.com/open-web3-stack/open-runtime-module-library/blob/master/currencies) Pallet developed by [Open Web3 Stack](https://github.com/open-web3-stack/), for reference check [The ORML Repo](https://github.com/open-web3-stack/open-runtime-module-library).
