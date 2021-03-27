@@ -100,7 +100,7 @@ parameter_types! {
 	pub const AdjustmentFrequency: Blocknumber = ADJUSTMENT_FREQUENCY;
 }
 
-impl stp258_tokens::Config for Runtime {
+impl stp258_serp::Config for Runtime {
 	type Event = Event;
 	type Balance = Balance;
 	type Amount = i64;
@@ -117,7 +117,7 @@ impl stp258_tokens::Config for Runtime {
 	type GetSerperRatio = GetSerperRatio;
 	type GetSettPayRatio = GetSettPayRatio;
 	type GetSingleUnit = GetSingleUnit;
-	type OnDust = stp258_tokens::TransferDust<Runtime, DustAccount>;
+	type OnDust = stp258_serp::TransferDust<Runtime, DustAccount>;
 }
 
 pub const DNAR: CurrencyId = 1;
@@ -132,7 +132,7 @@ parameter_types! {
 
 impl Config for Runtime {
 	type Event = Event;
-	type Stp258Currency = Stp258Tokens;
+	type Stp258Currency = Stp258Serp;
 	type Stp258Native = AdaptedStp258Asset;
 	type GetStp258NativeId = GetStp258NativeId;
 	type WeightInfo = ();
@@ -215,7 +215,7 @@ impl ExtBuilder {
 		.assimilate_storage(&mut t)
 		.unwrap();
 
-		stp258_tokens::GenesisConfig::<Runtime> {
+		stp258_serp::GenesisConfig::<Runtime> {
 			endowed_accounts: self
 				.endowed_accounts
 				.into_iter()

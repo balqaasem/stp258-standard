@@ -1,6 +1,6 @@
 [package]
 authors = ["Setheum Labs<https://github.com/Setheum-Labs>"]
-description = "Provide `Stp258Standard` implementation using `pallet-balances` and `stp258-tokens`"
+description = "Provide `Stp258Standard` implementation using `pallet-balances` and `stp258-serp`"
 edition = "2018"
 homepage = "https://setheum.xyz"
 license = "Apache-2.0 License"
