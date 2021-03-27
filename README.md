@@ -1,6 +1,6 @@
  # Setheum Tokenization Protocol 258 Standard
  ## Setheum Tokenization Protocol 258 Standard
- Multi-Currency Stablecoin SERP Module built on top of `Stp258Tokens` ans `Stp258Traits`.
+ Multi-Currency Stablecoin SERP Module built on top of `Stp258Tokens` and `Stp258Traits`.
 
 
  ## Overview
