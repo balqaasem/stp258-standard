@@ -151,7 +151,7 @@ construct_runtime!(
 	{
 		System: frame_system::{Module, Call, Storage, Config, Event<T>},
 		Stp258Standard: stp258_standard::{Module, Call, Event<T>},
-		Stp258Tokens: stp258_tokens::{Module, Storage, Event<T>, Config<T>},
+		Stp258Serp: stp258_serp::{Module, Storage, Event<T>, Config<T>},
 		PalletBalances: pallet_balances::{Module, Call, Storage, Config<T>, Event<T>},
 	}
 );
